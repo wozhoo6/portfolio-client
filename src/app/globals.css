@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0B0F1A;
+  --color-surface: #111827;
+  --color-card: #1A1F2E;
+  --color-primary: #8B5CF6;
+  --color-link: #A78BFA;
+  --color-tech: #60A5FA;
+  --color-text: #E5E7EB;
+  --color-muted: #9CA3AF;
+}
+
+@theme inline {
+  --font-heading: var(--font-jakarta);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+}
