@@ -10,6 +10,10 @@
 
 **Spec:** `client/docs/superpowers/specs/2026-11-20-portfolio-client-design.md` (approved 2026-11-20). Read it first: every task's layout is in its section. This plan holds the decisions the spec does not.
 
+## Testing policy (decided by Warren, 2026-11-20; overrides the test steps in the tasks below)
+
+Automated tests only for functions that talk to the API: `src/lib/api.ts`, `src/lib/server-projects.ts` (both done) and `src/lib/admin-api.ts` (Task 10). No tests per component and none for other helper files. So for Tasks 5 to 13, **skip the "write failing tests" and "run the tests" steps**; instead verify each task with `npx tsc --noEmit`, `npm run lint`, `npm run build`, and Warren's visual review in `npm run dev`. The test lists inside those tasks stay as a checklist of behaviors to check by hand, and the Review Focus items are checked by hand as well. In Task 10 keep only the `admin-api` tests (token header on every call, 401 handling, request methods and paths); drop the session, lock screen and page tests. `toPayload` and `fromProject` in Task 12 are not tested either.
+
 ## Global Constraints
 
 - TypeScript in strict mode; import alias `@/` = `src/`. Components are `.tsx`, everything else `.ts`. `npm run build` and `npx tsc --noEmit` must stay clean.
