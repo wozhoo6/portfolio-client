@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
 import { hero, site } from '@/data/content'
+import { useBrokenImage } from '@/lib/useBrokenImage'
 
 const portraitSize = 'h-24 w-24 md:h-[150px] md:w-[150px] rounded-2xl border border-primary/30'
 
 export function Hero() {
-  const [portraitMissing, setPortraitMissing] = useState(false)
+  const { ref: portraitRef, broken: portraitBroken, onError: onPortraitError } = useBrokenImage()
 
   return (
     <section className="mx-auto grid max-w-6xl items-center gap-6 px-6 pb-8 pt-8 md:grid-cols-[1fr_auto] md:gap-10 md:pt-12">
@@ -22,7 +22,7 @@ export function Hero() {
       </div>
 
       <div className="order-1 md:order-2">
-        {portraitMissing ? (
+        {portraitBroken ? (
           <div
             role="img"
             aria-label="Portrait placeholder"
@@ -37,9 +37,10 @@ export function Hero() {
           // A plain img: the file may not exist yet, and onError swaps in the placeholder.
           // eslint-disable-next-line @next/next/no-img-element
           <img
+            ref={portraitRef}
             src="/portrait.jpg"
             alt={`Portrait of ${site.name}`}
-            onError={() => setPortraitMissing(true)}
+            onError={onPortraitError}
             className={`${portraitSize} object-cover`}
           />
         )}

@@ -16,3 +16,17 @@
   --font-body: var(--font-inter);
   --font-mono: var(--font-jetbrains);
 }
+
+/* Popup (native <dialog>). Stops the page behind it scrolling without touching <body>:
+   scroll gestures over the backdrop or inside the dialog no longer chain to the page. */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  background-color: rgb(5 7 13 / 0.75);
+  backdrop-filter: blur(2px);
+  /* ::backdrop only honours overscroll-behavior once it is a scroll container. */
+  overflow: hidden;
+  overscroll-behavior: contain;
+}

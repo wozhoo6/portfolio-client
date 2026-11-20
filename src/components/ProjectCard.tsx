@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useBrokenImage } from '@/lib/useBrokenImage'
 import type { Project } from '@/lib/types'
 
 type ProjectCardProps = {
@@ -14,7 +14,7 @@ function count(n: number, word: string): string {
 }
 
 export function ProjectCard({ project, size, onOpen }: ProjectCardProps) {
-  const [imageBroken, setImageBroken] = useState(false)
+  const { ref: imageRef, broken: imageBroken, onError: onImageError } = useBrokenImage()
   const large = size === 'large'
   const showImage = Boolean(project.thumbnail_url) && !imageBroken
 
@@ -32,10 +32,11 @@ export function ProjectCard({ project, size, onOpen }: ProjectCardProps) {
           // every host allow-listed. onError swaps in the placeholder if a link is dead.
           // eslint-disable-next-line @next/next/no-img-element
           <img
+            ref={imageRef}
             src={project.thumbnail_url ?? undefined}
             alt=""
             loading="lazy"
-            onError={() => setImageBroken(true)}
+            onError={onImageError}
             className="h-full w-full object-cover"
           />
         ) : (
