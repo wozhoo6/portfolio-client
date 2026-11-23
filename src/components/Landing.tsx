@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { AboutSkills } from '@/components/AboutSkills'
+import { Contact } from '@/components/Contact'
 import { Education } from '@/components/Education'
 import { Experience } from '@/components/Experience'
+import { Footer } from '@/components/Footer'
 import { Hero } from '@/components/Hero'
 import { Impressions } from '@/components/Impressions'
 import { Nav } from '@/components/Nav'
@@ -18,9 +20,6 @@ export type LandingProps = {
   /** Slug of the project whose popup starts open (the /projects/{slug} address). */
   openSlug?: string | null
 }
-
-// Section shells that Batch B of Task 9 fills in.
-const shellsAfterImpressions = ['contact']
 
 export function Landing({ projects: initialProjects = [], loadFailed = false, openSlug: initialSlug = null }: LandingProps) {
   const [projects, setProjects] = useState<Project[]>(initialProjects)
@@ -99,10 +98,9 @@ export function Landing({ projects: initialProjects = [], loadFailed = false, op
             <Impressions label="Impressions" heading="Leave a note" />
           </div>
         </section>
-        {shellsAfterImpressions.map((id) => (
-          <section key={id} id={id} className="scroll-mt-16" />
-        ))}
+        <Contact />
       </main>
+      <Footer />
       <ProjectModal project={openProject} onClose={handleClose} />
     </>
   )

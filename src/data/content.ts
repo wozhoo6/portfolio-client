@@ -4,6 +4,7 @@
 export const site = {
   name: "Warren Tabora",
   title: "Full Stack Developer / Systems Solutions Analyst",
+  copyrightYear: "2026",
   /** Set to true once public/resume.pdf exists; the Resume button stays hidden until then. */
   resumeAvailable: false,
 };
@@ -155,7 +156,18 @@ export const contact = {
   blurb:
     "Open to full-time roles and freelance projects. Remote-friendly, based in Rizal, Philippines (GMT+8).",
   email: "warrentabora3410@gmail.com",
-  subject: "Hello Warren, I found your portfolio",
+  inquiries: [
+    {
+      label: "Discuss a role",
+      subject: "Interested in discussing a role with you",
+      primary: true,
+    },
+    {
+      label: "Contact me",
+      subject: "Interested in working with you on a project",
+      primary: false,
+    },
+  ],
   /** Leave empty until the URL is known; the link is hidden while empty. */
   linkedin: "",
   github: "",
