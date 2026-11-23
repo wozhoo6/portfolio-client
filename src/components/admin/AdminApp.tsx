@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { LockScreen } from '@/components/admin/LockScreen'
+import { OverviewTab } from '@/components/admin/OverviewTab'
 import { useAdminSession } from '@/lib/useAdminSession'
 
 const tabs = ['Overview', 'Projects', 'Impressions'] as const
@@ -48,8 +49,8 @@ export function AdminApp() {
       </aside>
 
       <main className="flex-1 p-6">
-        <h2 className="font-heading text-2xl font-semibold">{tab}</h2>
-        <p className="mt-2 text-muted">Coming next.</p>
+        <h2 className="mb-6 font-heading text-2xl font-semibold">{tab}</h2>
+        {tab === 'Overview' ? <OverviewTab api={api} /> : <p className="text-muted">Coming next.</p>}
       </main>
     </div>
   )
