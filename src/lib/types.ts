@@ -53,7 +53,7 @@ export type ProjectPayload = {
   repo_url: string | null
   live_url: string | null
   thumbnail_url: string | null
-  is_published: boolean
+  is_published?: boolean
   is_featured: boolean
   links: { label: string; url: string }[]
 }

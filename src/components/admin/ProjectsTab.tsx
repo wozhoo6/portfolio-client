@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { ProjectForm } from '@/components/admin/ProjectForm'
 import type { AdminApi } from '@/lib/admin-api'
 import type { AdminProject, Page } from '@/lib/types'
 
@@ -13,6 +14,9 @@ export function ProjectsTab({ api }: { api: AdminApi }) {
   const [loadFailed, setLoadFailed] = useState(false)
   const [attempt, setAttempt] = useState(0)
   const [message, setMessage] = useState('')
+  const [notice, setNotice] = useState('')
+  // null shows the list; { project: null } is the new-project form.
+  const [editing, setEditing] = useState<{ project: AdminProject | null } | null>(null)
 
   const [status, setStatus] = useState('')
   const [featured, setFeatured] = useState('')
@@ -77,8 +81,39 @@ export function ProjectsTab({ api }: { api: AdminApi }) {
     }
   }
 
+  function handleSaved(saved: AdminProject) {
+    const created = editing?.project === null
+    setEditing(null)
+    setAttempt((count) => count + 1)
+    setNotice(
+      created
+        ? `Created "${saved.title}"${saved.is_published ? '. It can take up to a minute to show on the public site.' : ' as a draft. Activate it when it is ready.'}`
+        : `Saved "${saved.title}". Changes can take up to a minute to show on the public site.`,
+    )
+  }
+
+  if (editing) {
+    return <ProjectForm api={api} project={editing.project} onSaved={handleSaved} onCancel={() => setEditing(null)} />
+  }
+
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-4">
+        <p role="status" className="text-sm text-emerald-400">
+          {notice}
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            setNotice('')
+            setEditing({ project: null })
+          }}
+          className="rounded-lg border-b-[3px] border-[#6D3FD1] bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:brightness-110"
+        >
+          New project
+        </button>
+      </div>
+
       <div className="flex flex-wrap items-end gap-3">
         <label className="flex min-w-48 flex-1 flex-col gap-1 text-xs text-muted">
           Search title
@@ -175,9 +210,21 @@ export function ProjectsTab({ api }: { api: AdminApi }) {
                     <td className="py-2 text-right">{project.view_count.toLocaleString()}</td>
                     <td className="py-2 text-right">{project.reactions_count.toLocaleString()}</td>
                     <td className="py-2 pl-4 text-right">
-                      <button type="button" onClick={() => void toggle(project)} className={rowButton}>
-                        {project.is_published ? 'Deactivate' : 'Activate'}
-                      </button>
+                      <span className="inline-flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setNotice('')
+                            setEditing({ project })
+                          }}
+                          className={rowButton}
+                        >
+                          Edit
+                        </button>
+                        <button type="button" onClick={() => void toggle(project)} className={rowButton}>
+                          {project.is_published ? 'Deactivate' : 'Activate'}
+                        </button>
+                      </span>
                     </td>
                   </tr>
                 ))}
