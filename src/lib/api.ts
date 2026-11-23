@@ -20,7 +20,7 @@ export function apiBase(): string {
   return raw.replace(/\/+$/, '')
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`${apiBase()}${path}`, {
     ...init,
     headers: {
@@ -39,6 +39,8 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     }
     throw new ApiError(res.status, body.message ?? res.statusText, body.errors ?? null)
   }
+
+  if (res.status === 204) return undefined as T
 
   return (await res.json()) as T
 }

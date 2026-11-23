@@ -7,6 +7,7 @@ import {
   getProjects,
   postImpression,
   recordView,
+  request,
   safeGetProjects,
   toggleReaction,
 } from '@/lib/api'
@@ -78,6 +79,13 @@ describe('apiBase', () => {
 
   it('falls back to NEXT_PUBLIC_API_URL', () => {
     expect(apiBase()).toBe(BASE)
+  })
+})
+
+describe('request', () => {
+  it('returns undefined for a 204 response with no body', async () => {
+    fetchMock.mockResolvedValue(new Response(null, { status: 204 }))
+    await expect(request('/admin/impressions/1', { method: 'DELETE' })).resolves.toBeUndefined()
   })
 })
 
