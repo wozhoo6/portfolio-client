@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ImpressionsTab } from '@/components/admin/ImpressionsTab'
 import { LockScreen } from '@/components/admin/LockScreen'
 import { OverviewTab } from '@/components/admin/OverviewTab'
 import { ProjectsTab } from '@/components/admin/ProjectsTab'
@@ -53,7 +54,7 @@ export function AdminApp() {
         <h2 className="mb-6 font-heading text-2xl font-semibold">{tab}</h2>
         {tab === 'Overview' && <OverviewTab api={api} />}
         {tab === 'Projects' && <ProjectsTab api={api} />}
-        {tab === 'Impressions' && <p className="text-muted">Coming next.</p>}
+        {tab === 'Impressions' && <ImpressionsTab api={api} />}
       </main>
     </div>
   )
