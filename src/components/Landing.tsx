@@ -86,6 +86,7 @@ export function Landing({ projects: initialProjects = [], loadFailed = false, op
 
   return (
     <>
+      <div aria-hidden="true" className="scroll-progress fixed inset-x-0 top-14 z-30 h-0.5 origin-left bg-primary" />
       <Nav />
       <main>
         <Hero />

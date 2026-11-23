@@ -124,8 +124,8 @@ export function Impressions({ projectSlug, heading, label, onTotal }: Impression
 
   return (
     <div>
-      {label && <h2 className="mb-2 text-sm font-semibold uppercase tracking-widest text-link">{label}</h2>}
-      <h3 className="mb-5 font-heading text-2xl font-semibold">{heading}</h3>
+      {label && <h2 className="reveal mb-2 text-sm font-semibold uppercase tracking-widest text-link">{label}</h2>}
+      <h3 className="reveal mb-5 font-heading text-2xl font-semibold">{heading}</h3>
 
       <div className="grid gap-8 md:grid-cols-2">
         <ImpressionForm onSend={send} />
@@ -215,7 +215,7 @@ function ImpressionForm({ onSend }: { onSend: (values: FormValues) => Promise<Se
   }
 
   return (
-    <form onSubmit={(event) => void handleSubmit(event)} noValidate className="flex flex-col gap-4 rounded-xl bg-card p-5">
+    <form onSubmit={(event) => void handleSubmit(event)} noValidate className="reveal flex flex-col gap-4 rounded-xl bg-card p-5">
       <div>
         <label htmlFor={`${id}-name`} className="mb-1 block text-sm font-medium">
           Name

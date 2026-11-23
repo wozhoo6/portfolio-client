@@ -9,7 +9,7 @@ export function AboutSkills() {
           About
         </h2>
 
-        <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+        <div className="reveal-stagger grid gap-8 md:grid-cols-2 md:gap-12">
           <div>
             <h3 className="font-heading text-2xl font-semibold md:text-3xl">{about.headline}</h3>
             {about.paragraphs.map((paragraph) => (
@@ -39,7 +39,7 @@ export function AboutSkills() {
 
           <div>
             <h3 className="font-heading text-2xl font-semibold md:text-3xl">Skills</h3>
-            <div className="mt-4 flex flex-col gap-5">
+            <div className="reveal-stagger mt-4 flex flex-col gap-5">
               {skills.groups.map((group) => (
                 <div key={group.group}>
                   <h4 className={subLabel}>{group.group}</h4>

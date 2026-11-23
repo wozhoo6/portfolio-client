@@ -17,6 +17,108 @@
   --font-mono: var(--font-jetbrains);
 }
 
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0);
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translateY(48px);
+  }
+}
+
+.timeline-line,
+.scroll-progress {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-text > * {
+    animation: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+  .hero-text > :nth-child(2) {
+    animation-delay: 90ms;
+  }
+  .hero-text > :nth-child(3) {
+    animation-delay: 180ms;
+  }
+  .hero-text > :nth-child(4) {
+    animation-delay: 270ms;
+  }
+  .hero-portrait {
+    animation: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 150ms backwards;
+  }
+
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    .reveal,
+    .reveal-stagger > * {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+    .reveal-stagger > :nth-child(2) {
+      animation-range: entry 8% entry 43%;
+    }
+    .reveal-stagger > :nth-child(3) {
+      animation-range: entry 16% entry 51%;
+    }
+    .reveal-stagger > :nth-child(n + 4) {
+      animation-range: entry 8% entry 43%;
+    }
+
+    dialog .reveal,
+    dialog .reveal-stagger > * {
+      animation: none;
+    }
+
+    .pop {
+      animation: pop-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+
+    .timeline-line {
+      display: block;
+      animation: grow-y linear both;
+      animation-timeline: view();
+      animation-range: cover 10% cover 60%;
+    }
+
+    .drift {
+      animation: drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70vh;
+    }
+
+    .scroll-progress {
+      display: block;
+      animation: grow-x linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
 /* Popup (native <dialog>). Stops the page behind it scrolling without touching <body>:
    scroll gestures over the backdrop or inside the dialog no longer chain to the page. */
 dialog:modal {

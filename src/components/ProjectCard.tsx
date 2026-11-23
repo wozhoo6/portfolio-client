@@ -25,7 +25,7 @@ export function ProjectCard({ project, size, onOpen }: ProjectCardProps) {
   ].filter((text): text is string => text !== null)
 
   return (
-    <article className="group relative flex h-full flex-col rounded-xl border border-transparent bg-card p-4 transition-colors hover:border-primary/60">
+    <article className="group relative flex h-full flex-col rounded-xl border border-transparent bg-card p-4 transition duration-200 hover:-translate-y-1 hover:border-primary/60 hover:shadow-lg hover:shadow-primary/10 motion-reduce:hover:translate-y-0">
       <div className={`mb-4 overflow-hidden rounded-lg ${large ? 'aspect-video' : 'h-28'}`}>
         {showImage ? (
           // A plain img: thumbnails are pasted links from any host, so next/image would need
@@ -37,10 +37,13 @@ export function ProjectCard({ project, size, onOpen }: ProjectCardProps) {
             alt=""
             loading="lazy"
             onError={onImageError}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:group-hover:scale-100"
           />
         ) : (
-          <div className="h-full w-full bg-gradient-to-br from-primary/30 to-tech/30" aria-hidden="true" />
+          <div
+            className="h-full w-full bg-gradient-to-br from-primary/30 to-tech/30 transition-transform duration-500 group-hover:scale-105 motion-reduce:group-hover:scale-100"
+            aria-hidden="true"
+          />
         )}
       </div>
 

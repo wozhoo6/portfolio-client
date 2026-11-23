@@ -3,14 +3,14 @@
 import { hero, site } from '@/data/content'
 import { useBrokenImage } from '@/lib/useBrokenImage'
 
-const portraitSize = 'h-24 w-24 md:h-[150px] md:w-[150px] rounded-2xl border border-primary/30'
+const portraitSize = 'drift h-24 w-24 md:h-[150px] md:w-[150px] rounded-2xl border border-primary/30'
 
 export function Hero() {
   const { ref: portraitRef, broken: portraitBroken, onError: onPortraitError } = useBrokenImage()
 
   return (
     <section className="mx-auto grid max-w-6xl items-center gap-6 px-6 pb-8 pt-8 md:grid-cols-[1fr_auto] md:gap-10 md:pt-12">
-      <div className="order-2 md:order-1">
+      <div className="hero-text order-2 md:order-1">
         <p className="mb-4 inline-block rounded-full border border-tech/40 px-3 py-0.5 text-xs font-medium text-tech md:text-sm">
           {hero.pill}
         </p>
@@ -21,7 +21,7 @@ export function Hero() {
         <p className="mt-3 max-w-xl text-base text-muted md:text-lg">{hero.intro}</p>
       </div>
 
-      <div className="order-1 md:order-2">
+      <div className="hero-portrait order-1 md:order-2">
         {portraitBroken ? (
           <div
             role="img"

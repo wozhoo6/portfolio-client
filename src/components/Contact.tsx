@@ -45,7 +45,7 @@ export function Contact() {
   return (
     <section id="contact" aria-labelledby="contact-heading" className="scroll-mt-16">
       <div className="mx-auto max-w-6xl px-6 py-10">
-        <div className="mx-auto max-w-2xl rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-tech/10 p-8 text-center md:p-12">
+        <div className="reveal mx-auto max-w-2xl rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-tech/10 p-8 text-center md:p-12">
           <h2 id="contact-heading" className="font-heading text-3xl font-semibold">
             {contact.heading}
           </h2>
