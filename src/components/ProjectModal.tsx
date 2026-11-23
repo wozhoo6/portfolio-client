@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { recordView } from '@/lib/api'
+import { Impressions } from '@/components/Impressions'
 import { ReactionBar } from '@/components/ReactionBar'
 import { useBrokenImage } from '@/lib/useBrokenImage'
 import type { Project } from '@/lib/types'
@@ -105,6 +106,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 function ProjectContent({ project }: { project: Project }) {
   const { ref: imageRef, broken: imageBroken, onError: onImageError } = useBrokenImage()
   const showImage = Boolean(project.thumbnail_url) && !imageBroken
+  const [impressionTotal, setImpressionTotal] = useState<number | null>(null)
 
   // Count one view each time the popup opens (the server ignores repeats within 30 minutes).
   useEffect(() => {
@@ -118,13 +120,13 @@ function ProjectContent({ project }: { project: Project }) {
   ].filter((link): link is { label: string; url: string; primary: boolean } => link !== null)
 
   return (
-    <div className="h-full overflow-y-auto overscroll-contain p-5 pt-14 md:h-auto md:max-h-[90vh] md:p-8 md:pt-8">
+    <div className="popup-scroll h-full overflow-y-auto overscroll-contain p-5 pt-14 md:h-auto md:max-h-[90vh] md:p-8 md:pt-8">
       <div className="grid gap-6 md:grid-cols-[1fr_1.1fr] md:gap-8">
         {/* Left column on desktop: picture, stack, links, reactions.
             On a phone the two column wrappers use `display: contents`, so their children join one
             grid and `order` sets the approved phone order: picture, title, stack and links,
             reactions, then the story. */}
-        <div className="contents md:block">
+        <div className="contents md:sticky md:top-8 md:block md:self-start">
           <div className="order-1 aspect-video overflow-hidden rounded-lg md:order-none">
             {showImage ? (
               // A plain img: pasted links from any host, with a placeholder if a link is dead.
@@ -169,6 +171,13 @@ function ProjectContent({ project }: { project: Project }) {
 
           <div className="order-4 md:order-none md:mt-4">
             <ReactionBar slug={project.slug} initialTotal={project.reactions_count} views={project.view_count} />
+            <button
+              type="button"
+              onClick={() => document.getElementById('project-impressions')?.scrollIntoView({ behavior: 'smooth' })}
+              className="mt-2 text-sm font-semibold text-link hover:underline"
+            >
+              {impressionTotal === null ? 'Impressions' : `Impressions · ${impressionTotal}`} ↓
+            </button>
           </div>
         </div>
 
@@ -216,6 +225,10 @@ function ProjectContent({ project }: { project: Project }) {
             </section>
           )}
         </div>
+      </div>
+
+      <div id="project-impressions" className="mt-8 scroll-mt-4 border-t border-white/10 pt-8">
+        <Impressions projectSlug={project.slug} heading="Impressions for this project" onTotal={setImpressionTotal} />
       </div>
     </div>
   )

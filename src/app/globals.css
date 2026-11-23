@@ -23,6 +23,14 @@ dialog:modal {
   overscroll-behavior: contain;
 }
 
+.popup-scroll {
+  --scrollbar-thumb: var(--color-primary);
+  --scrollbar-track: var(--color-surface);
+
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
 dialog::backdrop {
   background-color: rgb(5 7 13 / 0.75);
   backdrop-filter: blur(2px);

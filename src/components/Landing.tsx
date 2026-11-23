@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Hero } from '@/components/Hero'
+import { Impressions } from '@/components/Impressions'
 import { Nav } from '@/components/Nav'
 import { ProjectModal } from '@/components/ProjectModal'
 import { ProjectsSection } from '@/components/ProjectsSection'
@@ -15,8 +16,9 @@ export type LandingProps = {
   openSlug?: string | null
 }
 
-// Section shells in page order after Projects. Tasks 8 and 9 fill them in.
-const placeholderIds = ['about', 'experience', 'education', 'impressions', 'contact']
+// Section shells that Task 9 fills in; Impressions sits between them.
+const shellsBeforeImpressions = ['about', 'experience', 'education']
+const shellsAfterImpressions = ['contact']
 
 export function Landing({ projects: initialProjects = [], loadFailed = false, openSlug: initialSlug = null }: LandingProps) {
   const [projects, setProjects] = useState<Project[]>(initialProjects)
@@ -87,7 +89,15 @@ export function Landing({ projects: initialProjects = [], loadFailed = false, op
       <main>
         <Hero />
         <ProjectsSection projects={projects} onOpen={handleOpen} emptyMessage={emptyMessage} />
-        {placeholderIds.map((id) => (
+        {shellsBeforeImpressions.map((id) => (
+          <section key={id} id={id} className="scroll-mt-16" />
+        ))}
+        <section id="impressions" className="scroll-mt-16">
+          <div className="mx-auto max-w-6xl px-6 py-10">
+            <Impressions label="Impressions" heading="Leave a note" />
+          </div>
+        </section>
+        {shellsAfterImpressions.map((id) => (
           <section key={id} id={id} className="scroll-mt-16" />
         ))}
       </main>

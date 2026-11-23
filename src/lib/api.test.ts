@@ -215,6 +215,18 @@ describe('postImpression', () => {
     expect(JSON.parse(fetchMock.mock.calls[0][1].body).project_slug).toBeNull()
   })
 
+  it('sends the website value it is given as the honeypot field', async () => {
+    fetchMock.mockResolvedValue(json({ data: note() }, 201))
+    await postImpression({ name: 'Bot', message: 'Buy now', isEmployer: false, website: 'http://spam.test' })
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).website).toBe('http://spam.test')
+  })
+
+  it('returns null when the API accepts the note without data (honeypot)', async () => {
+    fetchMock.mockResolvedValue(json({ message: 'Thanks!' }, 202))
+    const result = await postImpression({ name: 'Bot', message: 'Buy now', isEmployer: false, website: 'x' })
+    expect(result).toBeNull()
+  })
+
   it('throws ApiError 422 carrying the field errors', async () => {
     fetchMock.mockResolvedValue(
       json(

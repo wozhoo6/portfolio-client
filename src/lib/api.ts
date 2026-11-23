@@ -110,21 +110,23 @@ export async function getImpressions(q: {
   }
 }
 
+/** Returns null when the API silently drops the note (honeypot filled). */
 export async function postImpression(b: {
   name: string
   message: string
   isEmployer: boolean
   projectSlug?: string
-}): Promise<Impression> {
-  const body = await request<{ data: Impression }>('/v1/impressions', {
+  website?: string
+}): Promise<Impression | null> {
+  const body = await request<{ data?: Impression }>('/v1/impressions', {
     method: 'POST',
     body: JSON.stringify({
       name: b.name,
       message: b.message,
       is_employer: b.isEmployer,
       project_slug: b.projectSlug ?? null,
-      website: '',
+      website: b.website ?? '',
     }),
   })
-  return body.data
+  return body.data ?? null
 }
