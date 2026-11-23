@@ -1,6 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { AboutSkills } from '@/components/AboutSkills'
+import { Education } from '@/components/Education'
+import { Experience } from '@/components/Experience'
 import { Hero } from '@/components/Hero'
 import { Impressions } from '@/components/Impressions'
 import { Nav } from '@/components/Nav'
@@ -16,8 +19,7 @@ export type LandingProps = {
   openSlug?: string | null
 }
 
-// Section shells that Task 9 fills in; Impressions sits between them.
-const shellsBeforeImpressions = ['about', 'experience', 'education']
+// Section shells that Batch B of Task 9 fills in.
 const shellsAfterImpressions = ['contact']
 
 export function Landing({ projects: initialProjects = [], loadFailed = false, openSlug: initialSlug = null }: LandingProps) {
@@ -89,10 +91,10 @@ export function Landing({ projects: initialProjects = [], loadFailed = false, op
       <main>
         <Hero />
         <ProjectsSection projects={projects} onOpen={handleOpen} emptyMessage={emptyMessage} />
-        {shellsBeforeImpressions.map((id) => (
-          <section key={id} id={id} className="scroll-mt-16" />
-        ))}
-        <section id="impressions" className="scroll-mt-16">
+        <AboutSkills />
+        <Experience />
+        <Education />
+        <section id="impressions" className="scroll-mt-16 bg-surface">
           <div className="mx-auto max-w-6xl px-6 py-10">
             <Impressions label="Impressions" heading="Leave a note" />
           </div>
