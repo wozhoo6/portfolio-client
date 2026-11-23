@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { recordView } from '@/lib/api'
+import { ReactionBar } from '@/components/ReactionBar'
 import { useBrokenImage } from '@/lib/useBrokenImage'
 import type { Project } from '@/lib/types'
 
@@ -119,10 +120,10 @@ function ProjectContent({ project }: { project: Project }) {
   return (
     <div className="h-full overflow-y-auto overscroll-contain p-5 pt-14 md:h-auto md:max-h-[90vh] md:p-8 md:pt-8">
       <div className="grid gap-6 md:grid-cols-[1fr_1.1fr] md:gap-8">
-        {/* Left column on desktop: picture, stack, links (reactions are added here in Task 7).
+        {/* Left column on desktop: picture, stack, links, reactions.
             On a phone the two column wrappers use `display: contents`, so their children join one
             grid and `order` sets the approved phone order: picture, title, stack and links,
-            (reactions), then the story. */}
+            reactions, then the story. */}
         <div className="contents md:block">
           <div className="order-1 aspect-video overflow-hidden rounded-lg md:order-none">
             {showImage ? (
@@ -165,6 +166,10 @@ function ProjectContent({ project }: { project: Project }) {
               ))}
             </div>
           )}
+
+          <div className="order-4 md:order-none md:mt-4">
+            <ReactionBar slug={project.slug} initialTotal={project.reactions_count} views={project.view_count} />
+          </div>
         </div>
 
         {/* Right column: the story. Every block is skipped when its data is empty. */}
