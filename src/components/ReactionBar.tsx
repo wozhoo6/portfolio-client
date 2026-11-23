@@ -2,6 +2,7 @@
 
 import { useRef, useState, useSyncExternalStore } from 'react'
 import { Flame, Heart, PartyPopper, ThumbsUp, type LucideIcon } from 'lucide-react'
+import * as m from 'motion/react-m'
 import { ApiError, toggleReaction, type ReactionType } from '@/lib/api'
 import { REACTION_TYPES, getReacted, setReacted } from '@/lib/reactions'
 
@@ -20,7 +21,7 @@ const BUTTONS: Record<ReactionType, { label: string; Icon: LucideIcon }> = {
 }
 
 const baseButton =
-  'inline-flex h-11 w-11 items-center justify-center rounded-xl border border-b-[3px] shadow-md shadow-black/30 transition duration-150 hover:-translate-y-0.5 active:translate-y-0'
+  'inline-flex h-11 w-11 items-center justify-center rounded-xl border border-b-[3px] shadow-md shadow-black/30 transition-colors duration-150'
 const idleButton = 'border-primary/40 bg-card text-link hover:bg-primary/10'
 const pressedButton = 'border-[#6D3FD1] bg-primary text-white hover:brightness-110'
 
@@ -68,9 +69,8 @@ export function ReactionBar({ slug, initialTotal, views }: ReactionBarProps) {
     }
   }
 
-  const counts = [total > 0 ? plural(total, 'reaction') : null, views > 0 ? plural(views, 'view') : null].filter(
-    (part): part is string => part !== null,
-  )
+  const reactionText = total > 0 ? plural(total, 'reaction') : null
+  const viewText = views > 0 ? plural(views, 'view') : null
 
   return (
     <div>
@@ -79,20 +79,46 @@ export function ReactionBar({ slug, initialTotal, views }: ReactionBarProps) {
           const { label, Icon } = BUTTONS[type]
           const pressed = changes[type] ?? saved.split(',').includes(type)
           return (
-            <button
+            <m.button
               key={type}
               type="button"
               aria-label={label}
               aria-pressed={pressed}
               onClick={() => void handleClick(type, pressed)}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.88 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 18 }}
               className={`${baseButton} ${pressed ? pressedButton : idleButton}`}
             >
-              <Icon size={20} aria-hidden="true" className={pressed ? 'fill-current' : ''} />
-            </button>
+              <m.span
+                initial={false}
+                animate={{ scale: pressed ? [1, 1.4, 1] : 1, rotate: pressed ? [0, -12, 0] : 0 }}
+                transition={{ duration: 0.4 }}
+                className="flex"
+              >
+                <Icon size={20} aria-hidden="true" className={pressed ? 'fill-current' : ''} />
+              </m.span>
+            </m.button>
           )
         })}
       </div>
-      {counts.length > 0 && <p className="mt-2 text-sm text-muted">{counts.join(' · ')}</p>}
+      {(reactionText || viewText) && (
+        <p className="mt-2 text-sm text-muted">
+          {reactionText && (
+            <m.span
+              key={total}
+              initial={{ y: -6, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.2 }}
+              className="inline-block"
+            >
+              {reactionText}
+            </m.span>
+          )}
+          {reactionText && viewText && ' · '}
+          {viewText}
+        </p>
+      )}
       <p role="status" className="mt-1 text-sm text-muted">
         {message}
       </p>

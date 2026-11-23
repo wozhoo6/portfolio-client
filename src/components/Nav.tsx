@@ -38,7 +38,7 @@ export function Nav() {
 
         <ul
           id="nav-links"
-          className={`${open ? 'flex' : 'hidden'} absolute left-0 right-0 top-full flex-col border-b border-card bg-surface px-6 pb-4 md:static md:flex md:flex-row md:items-center md:gap-7 md:border-0 md:bg-transparent md:p-0`}
+          className={`${open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'} absolute left-0 right-0 top-full flex flex-col border-b border-card bg-surface px-6 pb-4 transition-[opacity,translate,visibility] duration-200 motion-reduce:transition-none md:visible md:static md:translate-y-0 md:flex-row md:items-center md:gap-7 md:border-0 md:bg-transparent md:p-0 md:opacity-100`}
         >
           {navLinks.map((link) => (
             <li key={link.id} className="border-b border-card last:border-0 md:border-0">

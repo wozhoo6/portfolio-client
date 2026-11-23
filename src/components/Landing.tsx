@@ -8,6 +8,7 @@ import { Experience } from '@/components/Experience'
 import { Footer } from '@/components/Footer'
 import { Hero } from '@/components/Hero'
 import { Impressions } from '@/components/Impressions'
+import { MotionProvider } from '@/components/MotionProvider'
 import { Nav } from '@/components/Nav'
 import { ProjectModal } from '@/components/ProjectModal'
 import { ProjectsSection } from '@/components/ProjectsSection'
@@ -85,7 +86,7 @@ export function Landing({ projects: initialProjects = [], loadFailed = false, op
   const openProject = projects.find((project) => project.slug === openSlug) ?? null
 
   return (
-    <>
+    <MotionProvider>
       <div aria-hidden="true" className="scroll-progress fixed inset-x-0 top-14 z-30 h-0.5 origin-left bg-primary" />
       <Nav />
       <main>
@@ -103,6 +104,6 @@ export function Landing({ projects: initialProjects = [], loadFailed = false, op
       </main>
       <Footer />
       <ProjectModal project={openProject} onClose={handleClose} />
-    </>
+    </MotionProvider>
   )
 }

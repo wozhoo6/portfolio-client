@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import type { Variants } from 'motion/react'
+import * as m from 'motion/react-m'
 import { recordView } from '@/lib/api'
 import { Impressions } from '@/components/Impressions'
 import { ReactionBar } from '@/components/ReactionBar'
@@ -19,6 +21,16 @@ const primaryButton =
 const ghostButton =
   'inline-flex items-center rounded-lg border border-link/50 px-4 py-2 text-sm font-semibold text-link transition hover:bg-link/10'
 
+const container: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } },
+}
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 260, damping: 26 } },
+}
+
 /**
  * The project popup, built on the native <dialog> element: the browser provides the
  * focus containment, Escape key, backdrop, top layer and returning focus to the card.
@@ -29,6 +41,16 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
   // the browser Back button), so the resulting close event is not reported as a visitor action.
   const closedByProp = useRef(false)
   const isOpen = project !== null
+  // The last project stays rendered while the closing animation plays; a new session
+  // remounts the content on every open (fresh view count, scroll position and entrance).
+  const [shown, setShown] = useState<Project | null>(project)
+  const [session, setSession] = useState(0)
+  const [wasOpen, setWasOpen] = useState(isOpen)
+  if (project && project !== shown) setShown(project)
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen)
+    if (isOpen) setSession((count) => count + 1)
+  }
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -83,7 +105,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
       {...({ closedby: 'any' } as object)}
       className="m-0 h-full max-h-none w-full max-w-none overflow-hidden border-0 bg-surface p-0 text-text md:m-auto md:h-auto md:max-h-[90vh] md:w-[960px] md:max-w-[calc(100vw-2rem)] md:rounded-2xl md:border md:border-primary/30"
     >
-      {project && (
+      {shown && (
         <>
           <button
             type="button"
@@ -95,8 +117,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           </button>
-          {/* key resets the thumbnail state and view tracking when another project is shown */}
-          <ProjectContent key={project.slug} project={project} />
+          <ProjectContent key={`${shown.slug}-${session}`} project={shown} />
         </>
       )}
     </dialog>
@@ -121,13 +142,13 @@ function ProjectContent({ project }: { project: Project }) {
 
   return (
     <div className="popup-scroll h-full overflow-y-auto overscroll-contain p-5 pt-14 md:h-auto md:max-h-[90vh] md:p-8 md:pt-8">
-      <div className="grid gap-6 md:grid-cols-[1fr_1.1fr] md:gap-8">
+      <m.div variants={container} initial="hidden" animate="show" className="grid gap-6 md:grid-cols-[1fr_1.1fr] md:gap-8">
         {/* Left column on desktop: picture, stack, links, reactions.
             On a phone the two column wrappers use `display: contents`, so their children join one
             grid and `order` sets the approved phone order: picture, title, stack and links,
             reactions, then the story. */}
         <div className="contents md:sticky md:top-8 md:block md:self-start">
-          <div className="order-1 aspect-video overflow-hidden rounded-lg md:order-none">
+          <m.div variants={item} className="order-1 aspect-video overflow-hidden rounded-lg md:order-none">
             {showImage ? (
               // A plain img: pasted links from any host, with a placeholder if a link is dead.
               // eslint-disable-next-line @next/next/no-img-element
@@ -141,20 +162,20 @@ function ProjectContent({ project }: { project: Project }) {
             ) : (
               <div className="h-full w-full bg-gradient-to-br from-primary/30 to-tech/30" aria-hidden="true" />
             )}
-          </div>
+          </m.div>
 
           {project.tech_stack.length > 0 && (
-            <ul className="order-3 flex flex-wrap gap-1.5 md:order-none md:mt-4" aria-label="Tech stack">
+            <m.ul variants={item} className="order-3 flex flex-wrap gap-1.5 md:order-none md:mt-4" aria-label="Tech stack">
               {project.tech_stack.map((tech) => (
                 <li key={tech} className="rounded border border-tech/30 px-2 py-0.5 font-mono text-xs text-tech">
                   {tech}
                 </li>
               ))}
-            </ul>
+            </m.ul>
           )}
 
           {links.length > 0 && (
-            <div className="order-3 flex flex-wrap gap-2 md:order-none md:mt-4">
+            <m.div variants={item} className="order-3 flex flex-wrap gap-2 md:order-none md:mt-4">
               {links.map((link) => (
                 <a
                   key={`${link.label}-${link.url}`}
@@ -166,10 +187,10 @@ function ProjectContent({ project }: { project: Project }) {
                   {link.label} ↗
                 </a>
               ))}
-            </div>
+            </m.div>
           )}
 
-          <div className="order-4 md:order-none md:mt-4">
+          <m.div variants={item} className="order-4 md:order-none md:mt-4">
             <ReactionBar slug={project.slug} initialTotal={project.reactions_count} views={project.view_count} />
             <button
               type="button"
@@ -178,12 +199,12 @@ function ProjectContent({ project }: { project: Project }) {
             >
               {impressionTotal === null ? 'Impressions' : `Impressions · ${impressionTotal}`} ↓
             </button>
-          </div>
+          </m.div>
         </div>
 
         {/* Right column: the story. Every block is skipped when its data is empty. */}
         <div className="contents md:block">
-          <div className="order-2 md:order-none">
+          <m.div variants={item} className="order-2 md:order-none">
             <h2 id="project-modal-title" className="pr-10 font-heading text-2xl font-semibold md:pr-8">
               {project.title}
             </h2>
@@ -198,38 +219,44 @@ function ProjectContent({ project }: { project: Project }) {
             )}
 
             {project.description && <p className="mt-4 text-base text-muted">{project.description}</p>}
-          </div>
+          </m.div>
 
           {project.problem && (
-            <section className="order-5 md:order-none md:mt-5">
+            <m.section variants={item} className="order-5 md:order-none md:mt-5">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-link">Problem</h3>
               <p className="mt-1.5 text-base text-muted">{project.problem}</p>
-            </section>
+            </m.section>
           )}
 
           {project.solution && (
-            <section className="order-5 md:order-none md:mt-5">
+            <m.section variants={item} className="order-5 md:order-none md:mt-5">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-link">Solution</h3>
               <p className="mt-1.5 text-base text-muted">{project.solution}</p>
-            </section>
+            </m.section>
           )}
 
           {project.key_features.length > 0 && (
-            <section className="order-5 md:order-none md:mt-5">
+            <m.section variants={item} className="order-5 md:order-none md:mt-5">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-link">Key features</h3>
               <ul className="mt-1.5 list-disc space-y-1 pl-5 text-base text-muted">
                 {project.key_features.map((feature) => (
                   <li key={feature}>{feature}</li>
                 ))}
               </ul>
-            </section>
+            </m.section>
           )}
         </div>
-      </div>
+      </m.div>
 
-      <div id="project-impressions" className="mt-8 scroll-mt-4 border-t border-white/10 pt-8">
+      <m.div
+        id="project-impressions"
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, type: 'spring', stiffness: 260, damping: 26 }}
+        className="mt-8 scroll-mt-4 border-t border-white/10 pt-8"
+      >
         <Impressions projectSlug={project.slug} heading="Impressions for this project" onTotal={setImpressionTotal} />
-      </div>
+      </m.div>
     </div>
   )
 }

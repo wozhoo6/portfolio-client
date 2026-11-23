@@ -1,6 +1,8 @@
 'use client'
 
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent } from 'react'
+import { AnimatePresence } from 'motion/react'
+import * as m from 'motion/react-m'
 import { ApiError, getImpressions, postImpression } from '@/lib/api'
 import { timeAgo } from '@/lib/format'
 import type { Impression, Page } from '@/lib/types'
@@ -12,7 +14,8 @@ type ImpressionsProps = {
   onTotal?: (total: number) => void
 }
 
-type FieldErrors = { name?: string; message?: string; form?: string }
+type NoteRow = Impression & { clientKey?: string }
+type FieldErrors ={ name?: string; message?: string; form?: string }
 type FormValues = { name: string; message: string; isEmployer: boolean; website: string }
 type SendResult = { ok: true } | { ok: false; errors: FieldErrors }
 
@@ -26,13 +29,13 @@ const ghostButton =
 const inputClass =
   'w-full rounded-lg border border-white/10 bg-bg px-3 py-2 text-text placeholder:text-muted focus:border-primary focus:outline-none'
 
-function uniqueById(notes: Impression[]): Impression[] {
+function uniqueById<T extends Impression>(notes: T[]): T[] {
   const seen = new Set<number>()
   return notes.filter((note) => !seen.has(note.id) && seen.add(note.id))
 }
 
 export function Impressions({ projectSlug, heading, label, onTotal }: ImpressionsProps) {
-  const [notes, setNotes] = useState<Impression[]>([])
+  const [notes, setNotes] = useState<NoteRow[]>([])
   const totalRef = useRef(0)
   const [pageInfo, setPageInfo] = useState({ page: 0, lastPage: 0 })
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
@@ -53,7 +56,7 @@ export function Impressions({ projectSlug, heading, label, onTotal }: Impression
 
   const applyPage = useCallback(
     (result: Page<Impression>) => {
-      setNotes((current) => uniqueById([...current, ...result.items]))
+      setNotes((current) => uniqueById<NoteRow>([...current, ...result.items]))
       setPageInfo({ page: result.page, lastPage: result.lastPage })
       setTotalTo(result.total)
     },
@@ -95,8 +98,9 @@ export function Impressions({ projectSlug, heading, label, onTotal }: Impression
 
   async function send(values: FormValues): Promise<SendResult> {
     const tempId = -Date.now()
-    const temp: Impression = {
+    const temp: NoteRow = {
       id: tempId,
+      clientKey: `tmp-${tempId}`,
       name: values.name,
       is_employer: values.isEmployer,
       message: values.message,
@@ -108,7 +112,9 @@ export function Impressions({ projectSlug, heading, label, onTotal }: Impression
 
     try {
       const saved = await postImpression({ ...values, projectSlug })
-      setNotes((current) => uniqueById(current.map((note) => (note.id === tempId ? (saved ?? note) : note))))
+      setNotes((current) =>
+        uniqueById(current.map((note) => (note.id === tempId ? { ...(saved ?? note), clientKey: note.clientKey } : note))),
+      )
       return { ok: true }
     } catch (error) {
       setNotes((current) => current.filter((note) => note.id !== tempId))
@@ -147,9 +153,18 @@ export function Impressions({ projectSlug, heading, label, onTotal }: Impression
           )}
 
           {notes.length > 0 && (
-            <ul className="flex flex-col gap-3">
+            <ul className="relative flex flex-col gap-3">
+              <AnimatePresence initial={false} mode="popLayout">
               {notes.map((note) => (
-                <li key={note.id} className="rounded-xl bg-card p-4">
+                <m.li
+                  key={note.clientKey ?? note.id}
+                  layout
+                  initial={{ opacity: 0, y: -16, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                  className="rounded-xl bg-card p-4"
+                >
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                     <span className="font-semibold">{note.name ?? 'Anonymous'}</span>
                     {note.is_employer && (
@@ -160,8 +175,9 @@ export function Impressions({ projectSlug, heading, label, onTotal }: Impression
                     <span className="text-xs text-muted">{timeAgo(note.created_at)}</span>
                   </div>
                   <p className="mt-2 whitespace-pre-line break-words text-muted">{note.message}</p>
-                </li>
+                </m.li>
               ))}
+              </AnimatePresence>
             </ul>
           )}
 
