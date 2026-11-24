@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Client
 
-## Getting Started
+The public site and admin page for Warren Tabora's portfolio. It is a one-page Next.js app that reads projects, reactions and visitor impressions from the [portfolio API](../api).
 
-First, run the development server:
+## Features
+
+- One scrolling page: Projects, About and Skills, Experience, Education and Certificates, Contact.
+- Project cards open in a popup with the full case study, links, reactions and visitor impressions. Each project also has a direct link at `/projects/<slug>`.
+- Reactions and impressions update the UI instantly and roll back if the request fails.
+- Scroll-driven motion (CSS plus the `motion` library) that respects reduced-motion settings.
+- Admin page at `/admin`, locked by an admin token: overview stats, project create/edit/activate, and impression moderation.
+- If the API is down, the site still builds and shows an empty projects section.
+
+## Tech stack
+
+- Next.js 16 (App Router) and React 19
+- TypeScript
+- Tailwind CSS 4
+- `motion` and `lucide-react`
+- Vitest and Testing Library
+
+## Getting started
+
+You need Node.js and a running copy of the API (see [`../api`](../api)).
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | What it does |
+| --- | --- | --- |
+| `NEXT_PUBLIC_API_URL` | Yes | Base URL of the API including `/api`, for example `http://127.0.0.1:8000/api`. Used in the browser. |
+| `API_URL` | No | Same value, used only on the server (build and server rendering). It takes priority over `NEXT_PUBLIC_API_URL` there. |
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm start` | Run the production build |
+| `npm run lint` | Lint with ESLint |
+| `npm test` | Run the tests |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The tests cover the code that talks to the API (`src/lib/api`, `admin-api` and `server-projects`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Editing content
 
-## Deploy on Vercel
+All the static text lives in [`src/data/content.ts`](src/data/content.ts): name and title, bio, skills, experience, education, certificates and contact links. Components only render it. Projects come from the API, not from this file.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Static files go in `public/`: `portrait.jpg` for the hero portrait and `Warren_Tabora_Resume.pdf` for the Resume button.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project structure
+
+```
+src/
+  app/          pages: home, /projects/[slug], /admin
+  components/   page sections, project popup, reactions, admin/ tabs
+  data/         content.ts (all site copy)
+  lib/          API clients, types, hooks, helpers, tests
+public/         portrait and resume
+```
+
+## Deploying
+
+The client is built for Vercel.
+
+1. Push this folder to GitHub and import it in Vercel.
+2. Set `NEXT_PUBLIC_API_URL` to your API URL plus `/api`.
+3. On the API host, set `FRONTEND_URL` to your Vercel URL so CORS allows it (comma-separate several origins).
+4. Redeploy, then check that projects load, a reaction toggles, a note posts and `/admin` unlocks.

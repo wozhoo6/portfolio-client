@@ -30,6 +30,15 @@
   }
 }
 
+.dot-light {
+  transition: background-color 0.25s, border-color 0.25s;
+}
+
+.dot-light[data-lit] {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+}
+
 @keyframes grow-x {
   from {
     transform: scaleX(0);

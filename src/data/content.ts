@@ -6,7 +6,7 @@ export const site = {
   title: "Full Stack Developer / Systems Solutions Analyst",
   copyrightYear: "2026",
   /** Set to true once public/resume.pdf exists; the Resume button stays hidden until then. */
-  resumeAvailable: false,
+  resumeAvailable: true,
 };
 
 export const navLinks: { id: string; label: string }[] = [
@@ -18,13 +18,13 @@ export const navLinks: { id: string; label: string }[] = [
 ];
 
 export const hero = {
-  pill: "Open to full-time, freelance",
+  pill: "Open to Full-Time, Freelance",
   intro:
-    "I solve real business problems with effective, proven solutions that real users rely on.",
+    "I solve real business problems with effective, proven solutions that real users can actually use.",
 };
 
 export const about = {
-  headline: "Problem solver who builds the whole system",
+  headline: "Full-stack developer that enjoys solving real-world problems",
   paragraphs: [
     "I'm a Full Stack Developer with 2+ years of real-world experience. I started as a backend developer and now work across the full stack, building systems and apps used locally and internationally. I also run SEO and Google Ads for non-profits.",
     "I've loved troubleshooting since my first PC: I kept breaking it and finding a way to fix it. That curiosity led me to a Computer Science degree, and coding became my main way of thinking up solutions.",
@@ -72,7 +72,14 @@ export const skills: { groups: SkillGroup[]; workStyle: string[] } = {
       ],
     },
   ],
-  workStyle: ["Problem-solving", "Initiative", "Teamwork", "Communication"],
+  workStyle: [
+    "Analyze",
+    "Solve",
+    "Communicate",
+    "Collaborate",
+    "Execute",
+    "Deliver",
+  ],
 };
 
 export type ExperienceEntry = {
@@ -92,16 +99,16 @@ export const experience: ExperienceEntry[] = [
     dates: "Mar 2026 – Present",
     current: true,
     description:
-      "Code reviews, feature work and production deployment for a marketplace platform, plus business analysis and QA with cross-functional teams.",
+      "Maintain and improve the PEZA Ezone Marketplace codebase, turning client requirements into working features and collaborating closely with the team to deliver on every deadline.",
   },
   {
-    role: "Junior Analyst (Developer)",
+    role: "Full Stack Developer / Systems Solutions Analyst",
     company: "Streamsoft Inc.",
     note: "part-time",
     dates: "2025 – Present",
     current: true,
     description:
-      "Backend development, workflow automation, QA, SEO and Google Ad Grant management to improve site performance and efficiency.",
+      "Build and deploy kiosk and WordPress-based systems, including a custom API plugin, a kiosk app rolled out through MDM, and a clinic booking system. I also manage the organization's SEO and Google Ads.",
   },
   {
     role: "Technical SEO Intern",
@@ -135,7 +142,12 @@ export const education: EducationEntry[] = [
     dates: "Aug 2022 – Apr 2024",
   },
   // Warren fills these in during development; the card stays hidden until every field has text.
-  { level: "High school", title: "", school: "", dates: "" },
+  {
+    level: "Senior High school",
+    title: "STEM",
+    school: "University of Perpetual Help System DALTA - Molino",
+    dates: "2020-2022",
+  },
 ];
 
 export type CertificateEntry = {
@@ -148,7 +160,12 @@ export type CertificateEntry = {
 /** An entry with any empty field is not shown on the page. */
 export const certificates: CertificateEntry[] = [
   // TESDA NC II: Warren fills in the title, training center and year during development.
-  { issuer: "TESDA", title: "", center: "", year: "" },
+  {
+    issuer: "TESDA",
+    title: "NC II Computer System Servicing",
+    center: "Michigan English Assessments Inc.",
+    year: "2026",
+  },
 ];
 
 export const contact = {
@@ -169,8 +186,8 @@ export const contact = {
     },
   ],
   /** Leave empty until the URL is known; the link is hidden while empty. */
-  linkedin: "",
-  github: "",
+  linkedin: "https://www.linkedin.com/in/warren-tabora-86447b30b/",
+  github: "https://github.com/wozhoo6",
 };
 
 export function isComplete(entry: Record<string, string>): boolean {

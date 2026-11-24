@@ -31,7 +31,7 @@ export function AboutSkills() {
             </dl>
 
             {site.resumeAvailable && (
-              <a href="/resume.pdf" download className={`${primaryButton} mt-6`}>
+              <a href="/Warren_Tabora_Resume.pdf" download className={`${primaryButton} mt-6`}>
                 Resume (PDF)
               </a>
             )}
@@ -55,7 +55,7 @@ export function AboutSkills() {
             </div>
 
             <p className="mt-6 text-sm text-muted">
-              <span className="font-semibold">How I work:</span> {skills.workStyle.join(' · ')}
+              <span className="font-semibold">How I work:</span> {skills.workStyle.join(' → ')}
             </p>
           </div>
         </div>
